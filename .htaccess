@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Todas las rutas que empiecen con /api/ van a api/index.php
+    RewriteRule ^api/.*$ api/index.php [L]
+</IfModule>
