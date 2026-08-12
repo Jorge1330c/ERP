@@ -1,8 +1,11 @@
 # Usa la imagen oficial de PHP 8.2 con Apache
 FROM php:8.2-apache
 
-# Instala la extensión PDO para SQLite
-RUN docker-php-ext-install pdo pdo_sqlite
+# Instala las dependencias del sistema para SQLite y luego la extensión
+RUN apt-get update && apt-get install -y \
+        libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install pdo pdo_sqlite
 
 # Habilita el módulo mod_rewrite de Apache
 RUN a2enmod rewrite
@@ -10,7 +13,7 @@ RUN a2enmod rewrite
 # Copia todo el código del proyecto al contenedor
 COPY . /var/www/html/
 
-# Crea el directorio donde guardaremos la base de datos persistentemente
+# Crea el directorio para la base de datos persistente y da permisos
 RUN mkdir -p /data && chmod 777 /data
 
 # Configura Apache para que permita .htaccess (necesario para nuestras reglas)
