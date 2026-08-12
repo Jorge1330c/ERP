@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERP Nexus · Panel principal</title>
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome 6 (gratis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="fas fa-cube"></i>
+            </div>
+            <span class="brand-name">ERP <strong>Nexus</strong></span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active">
+                    <a href="index.html">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="ventas.html">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="clientes.html">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="inventario.html">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="formulas.html">
+                        <i class="fas fa-flask"></i>
+                        <span>Fórmulas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="proveedores.html">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="informes.html">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Informes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="configuracion.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="admin.html">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Administración</span>
+                    </a>
+                </li>
+                <li class="logout">
+                    <a href="login.html" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <small>v2.4.1</small>
+        </div>
+    </aside>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main class="main-content">
+
+        <!-- ===== HEADER ===== -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar pedidos, clientes..." id="searchInput" />
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <button class="notif-btn" id="notifBtn" aria-label="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge">3</span>
+                </button>
+
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10542/10542459.png" alt="Avatar" />
+                        <span id="userNameDisplay">USUARIO</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="configuracion.html"><i class="fas fa-user"></i> Mi perfil</a>
+                        <a href="configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+                        <a href="#"><i class="fas fa-question-circle"></i> Ayuda</a>
+                        <hr />
+                        <a href="#" id="logoutDropdown"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== DASHBOARD ===== -->
+        <section class="dashboard">
+
+            <!-- Tarjetas de KPI -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon blue">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Ventas totales</span>
+                        <span class="kpi-value" id="kpiTotalVentas">$ 0.00</span>
+                        <span class="kpi-change positive">
+                            <i class="fas fa-arrow-up"></i> 0.00%
+                        </span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon green">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Pedidos</span>
+                        <span class="kpi-value" id="kpiTotalPedidos">0</span>
+                        <span class="kpi-change positive">
+                            <i class="fas fa-arrow-up"></i> 0.00%
+                        </span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon orange">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Clientes</span>
+                        <span class="kpi-value" id="kpiTotalClientes">0</span>
+                        <span class="kpi-change positive">
+                            <i class="fas fa-arrow-up"></i> 0.00%
+                        </span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon purple">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Ingresos netos</span>
+                        <span class="kpi-value" id="kpiIngresosNetos">$ 0.00</span>
+                        <span class="kpi-change negative">
+                            <i class="fas fa-arrow-down"></i> 0.00%
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico + Actividades recientes -->
+            <div class="charts-row">
+                <!-- Gráfico de barras (simulado) -->
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3>Ventas y compras mensuales</h3>
+                        <span class="badge">Este año</span>
+                    </div>
+                    <div class="bar-chart" id="barChart">
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Ene</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Feb</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Mar</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Abr</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>May</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Jun</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Jul</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Ago</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Sep</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Oct</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Nov</span>
+                        </div>
+                        <div class="bar-item" data-month="0">
+                            <div class="bar-group">
+                                <div class="bar bar-venta" style="height: 0%;"></div>
+                                <div class="bar bar-compra" style="height: 0%;"></div>
+                            </div>
+                            <span>Dic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividades recientes -->
+                <div class="activity-card">
+                    <div class="card-header">
+                        <h3>Actividad reciente</h3>
+                        <a href="#" class="link">Ver todo</a>
+                    </div>
+                    <ul class="activity-list" id="activityList">
+                        <li>
+                            <i class="fas fa-check-circle green"></i>
+                            <div>
+                                <strong>Pedido </strong> 
+                                <span class="time"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-user-plus blue"></i>
+                            <div>
+                                <strong>Nuevo cliente</strong>: 
+                                <span class="time"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-exclamation-triangle orange"></i>
+                            <div>
+                                <strong>Stock bajo</strong> 
+                                <span class="time"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-credit-card purple"></i>
+                            <div>
+                                <strong>Pago recibido</strong> 
+                                <span class="time"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-truck blue"></i>
+                            <div>
+                                <strong>Envío</strong>
+                                <span class="time"></span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tabla de pedidos recientes -->
+            <div class="table-card">
+                <div class="card-header">
+                    <h3>Pedidos recientes</h3>
+                    <a href="ventas.html" class="link">Ver todos</a>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Producto</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrdersBody">
+                            <!-- generado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="theme.js"></script>
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

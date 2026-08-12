@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERP Login</title>
+    <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+
+    <div class="login-container">
+        <!-- Panel izquierdo - Imagen / Branding -->
+        <div class="login-brand">
+            <div class="brand-content">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3h18v18H3z M7 7h10v10H7z M7 12h10 M12 7v10" />
+                    </svg>
+                </div>
+                <h1>ERP <span>Nexus</span></h1>
+                <p class="brand-subtitle">Sistema de gestión empresarial</p>
+                <div class="brand-features">
+                    <span>🔐 Seguridad</span>
+                    <span>⚡ Rendimiento</span>
+                    <span>📊 Análisis</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel derecho - Formulario -->
+        <div class="login-form">
+            <div class="form-header">
+                <h2>Bienvenido</h2>
+                <p>Inicia sesión para acceder al sistema</p>
+            </div>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="email">Correo electrónico</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input
+                        type="email"
+                        id="email"
+                        placeholder="ejemplo@empresa.com"
+                        required
+                        />
+                    </div>
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input
+                        type="password"
+                        id="password"
+                        placeholder="Ingresa tu contraseña"
+                        required
+                        />
+                        <button
+                        type="button"
+                        class="toggle-password"
+                        id="togglePassword"
+                        aria-label="Mostrar contraseña"
+                        >
+                        👁️
+                    </button>
+                </div>
+                <span class="error-message" id="passwordError"></span>
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember" />
+                    <span>Recordarme</span>
+                </label>
+                <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button type="submit" class="btn-login" id="loginBtn">
+                <span class="btn-text">Iniciar sesión</span>
+                <span class="btn-spinner hidden"></span>
+            </button>
+
+            <div class="form-footer">
+                <p>
+                    ¿No tienes una cuenta?
+                    <a href="#">Solicita acceso</a>
+                </p>
+            </div>
+        </form>
+
+        <!-- Versión / info -->
+        <div class="form-version">v2.4.1 · Soporte 24/7</div>
+    </div>
+</div>
+
+<script src="login.js"></script>
+    <!-- ===== SCRIPTS ===== -->    
+<script src="api.js"></script>
+<script src="login.js"></script>
+
+</body>
+</html>

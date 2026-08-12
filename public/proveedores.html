@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERP Nexus · Proveedores y Compras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Librerías para exportar a PDF y CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="proveedores.css" />
+    <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fas fa-cube"></i></div>
+            <span class="brand-name">ERP <strong>Nexus</strong></span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="ventas.html"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
+                <li><a href="clientes.html"><i class="fas fa-users"></i> Clientes</a></li>
+                <li><a href="inventario.html"><i class="fas fa-boxes"></i> Inventario</a></li>
+                <li><a href="formulas.html"><i class="fas fa-flask"></i> Fórmulas</a></li>
+                <li class="active"><a href="proveedores.html"><i class="fas fa-truck"></i> Proveedores</a></li>
+                <li><a href="informes.html"><i class="fas fa-file-alt"></i> Informes</a></li>
+                <li><a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="admin.html"><i class="fas fa-user-shield"></i> Administración</a></li>
+                <li class="logout"><a href="login.html" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer"><small>v2.4.1</small></div>
+    </aside>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar..." id="globalSearch" />
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="notif-btn" id="notifBtn"><i class="fas fa-bell"></i><span class="notif-badge">3</span></button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10542/10542459.png" alt="Avatar" />
+                        <span id="userNameDisplay">USUARIO</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="configuracion.html"><i class="fas fa-user"></i> Mi perfil</a>
+                        <a href="configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+                        <a href="#"><i class="fas fa-question-circle"></i> Ayuda</a>
+                        <hr />
+                        <a href="#" id="logoutDropdown"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="suppliers-page">
+            <!-- Pestañas -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="proveedores"><i class="fas fa-building"></i> Proveedores</button>
+                <button class="tab-btn" data-tab="compras"><i class="fas fa-shopping-basket"></i> Compras</button>
+            </div>
+
+            <!-- ===== TAB: PROVEEDORES ===== -->
+            <div class="tab-panel active" id="tab-proveedores">
+                <div class="page-header">
+                    <h2><i class="fas fa-truck"></i> Proveedores</h2>
+                    <div class="header-actions">
+                        <button class="btn-outline" id="exportBtn"><i class="fas fa-file-export"></i> Exportar</button>
+                        <button class="btn-primary" id="openAddModal"><i class="fas fa-plus"></i> Nuevo proveedor</button>
+                    </div>
+                </div>
+
+                <!-- Tarjetas de resumen -->
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-icon blue"><i class="fas fa-building"></i></div>
+                        <div>
+                            <span class="summary-label">Total proveedores</span>
+                            <span class="summary-value" id="totalSuppliers">0</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon green"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <span class="summary-label">Activos</span>
+                            <span class="summary-value" id="activeSuppliers">0</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon orange"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <span class="summary-label">Pendientes</span>
+                            <span class="summary-value" id="pendingSuppliers">0</span>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon purple"><i class="fas fa-tags"></i></div>
+                        <div>
+                            <span class="summary-label">Categorías</span>
+                            <span class="summary-value" id="categoryCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label>Estado</label>
+                        <select id="statusFilter">
+                            <option value="">Todos</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                            <option value="pendiente">Pendiente</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Categoría</label>
+                        <select id="categoryFilter">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+                    <button class="btn-filter" id="applyFilters"><i class="fas fa-sliders-h"></i> Aplicar</button>
+                    <button class="btn-reset" id="resetFilters"><i class="fas fa-undo"></i></button>
+                </div>
+
+                <!-- Tabla de proveedores -->
+                <div class="table-card">
+                    <div class="card-header">
+                        <h3>Lista de proveedores</h3>
+                        <span class="badge" id="supplierCount">0</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Contacto</th>
+                                    <th>Categoría</th>
+                                    <th>Teléfono</th>
+                                    <th>Email</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supplierTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== TAB: COMPRAS ===== -->
+            <div class="tab-panel" id="tab-compras">
+                <div class="page-header">
+                    <h2><i class="fas fa-shopping-basket"></i> Compras a proveedores</h2>
+                    <div class="header-actions">
+                        <button class="btn-primary" id="openAddCompraModal"><i class="fas fa-plus"></i> Nueva compra</button>
+                    </div>
+                </div>
+
+                <!-- Filtros compras -->
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label>Desde</label>
+                        <input type="date" id="fechaDesde" />
+                    </div>
+                    <div class="filter-group">
+                        <label>Hasta</label>
+                        <input type="date" id="fechaHasta" />
+                    </div>
+                    <div class="filter-group">
+                        <label>Proveedor</label>
+                        <select id="compraProveedorFilter">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <button class="btn-filter" id="applyCompraFilters"><i class="fas fa-sliders-h"></i> Aplicar</button>
+                    <button class="btn-reset" id="resetCompraFilters"><i class="fas fa-undo"></i></button>
+                </div>
+
+                <!-- Tabla de compras -->
+                <div class="table-card">
+                    <div class="card-header">
+                        <h3>Historial de compras</h3>
+                        <span class="badge" id="compraCount">0</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Proveedor</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Productos</th> <!-- NUEVA COLUMNA -->
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="compraTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== MODAL: NUEVO PROVEEDOR ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nuevo proveedor</h3>
+                <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="supplierForm" autocomplete="off">
+                <input type="hidden" id="editId" value="" />
+                <div class="form-group">
+                    <label for="nombre">Nombre *</label>
+                    <input type="text" id="nombre" placeholder="Nombre de la empresa" required />
+                </div>
+                <div class="form-group">
+                    <label for="contacto">Contacto principal</label>
+                    <input type="text" id="contacto" placeholder="Nombre del contacto" />
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoría *</label>
+                    <select id="categoria" required>
+                        <option value="">Seleccionar</option>
+                        <option value="Materia-P">Materia Prima</option>
+                        <option value="Envases">Envases</option>
+                        <option value="Herramientas">Herramientas</option>
+                        <option value="Aditivos">Aditivos</option>
+                        <option value="Saborizantes">Saborizantes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" placeholder="Ej: 555-1234" />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="proveedor@empresa.com" />
+                </div>
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <select id="estado">
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="pendiente">Pendiente</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="modalCancel">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: NUEVA COMPRA ===== -->
+    <div class="modal-overlay" id="modalCompraOverlay">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalCompraTitle">Nueva compra</h3>
+                <button class="modal-close" id="modalCompraClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="compraForm" autocomplete="off">
+                <input type="hidden" id="editCompraId" value="" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="compraProveedor">Proveedor *</label>
+                        <select id="compraProveedor" required>
+                            <option value="">Seleccionar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="compraFecha">Fecha *</label>
+                        <input type="date" id="compraFecha" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Productos</label>
+                    <div class="items-container">
+                        <div class="item-row" id="compraItemTemplate" style="display:none;">
+                            <select class="compra-producto" style="flex:2;">
+                                <option value="">Seleccionar</option>
+                            </select>
+                            <input type="number" class="compra-cantidad" placeholder="Cantidad" step="0.01" min="0" value="1" style="flex:1;" />
+                            <input type="number" class="compra-precio" placeholder="Precio unit." step="0.01" min="0" style="flex:1;" />
+                            <span class="item-subtotal">$0.00</span>
+                            <button type="button" class="item-remove"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div id="compraItemsContainer"></div>
+                        <button type="button" class="btn-add-item" id="addCompraItemBtn"><i class="fas fa-plus"></i> Agregar producto</button>
+                    </div>
+                </div>
+                <div class="total-row">
+                    <span><strong>Total de la compra:</strong> <span id="totalCompraModal">$0.00</span></span>
+                </div>
+                <div class="form-group">
+                    <label for="compraEstado">Estado</label>
+                    <select id="compraEstado">
+                        <option value="recibido">Recibido</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="modalCompraCancel">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="modalCompraSubmit">Guardar compra</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="theme.js"></script>
+    <script src="api.js"></script>
+    <script src="proveedores.js"></script>
+</body>
+</html>

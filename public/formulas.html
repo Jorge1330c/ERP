@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERP Nexus · Fórmulas</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Librerías para exportar a PDF y CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="formulas.css" />
+    <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fas fa-cube"></i></div>
+            <span class="brand-name">ERP <strong>Nexus</strong></span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="ventas.html"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
+                <li><a href="clientes.html"><i class="fas fa-users"></i> Clientes</a></li>
+                <li><a href="inventario.html"><i class="fas fa-boxes"></i> Inventario</a></li>
+                <li class="active"><a href="formulas.html"><i class="fas fa-flask"></i> Fórmulas</a></li>
+                <li><a href="proveedores.html"><i class="fas fa-truck"></i> Proveedores</a></li>
+                <li><a href="informes.html"><i class="fas fa-file-alt"></i> Informes</a></li>
+                <li><a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="admin.html"><i class="fas fa-user-shield"></i> Administración</a></li>
+                <li class="logout"><a href="login.html" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer"><small>v2.4.1</small></div>
+    </aside>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main class="main-content">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar fórmulas..." id="globalSearch" />
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="notif-btn" id="notifBtn"><i class="fas fa-bell"></i><span class="notif-badge">3</span></button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10542/10542459.png" alt="Avatar" />
+                        <span id="userNameDisplay">USUARIO</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="configuracion.html"><i class="fas fa-user"></i> Mi perfil</a>
+                        <a href="configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+                        <a href="#"><i class="fas fa-question-circle"></i> Ayuda</a>
+                        <hr />
+                        <a href="#" id="logoutDropdown"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== PÁGINA DE FÓRMULAS ===== -->
+        <section class="formulas-page">
+            <!-- Encabezado -->
+            <div class="page-header">
+                <h2><i class="fas fa-flask"></i> Fórmulas / Recetas</h2>
+                <div class="header-actions">
+                    <button class="btn-outline" id="exportBtn"><i class="fas fa-file-export"></i> Exportar</button>
+                    <button class="btn-primary" id="openAddModal"><i class="fas fa-plus"></i> Nueva fórmula</button>
+                </div>
+            </div>
+
+            <!-- Tarjetas de resumen -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-icon blue"><i class="fas fa-flask"></i></div>
+                    <div><span class="summary-label">Total fórmulas</span><span class="summary-value" id="totalFormulas">0</span></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div><span class="summary-label">Activas</span><span class="summary-value" id="activeFormulas">0</span></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon orange"><i class="fas fa-cubes"></i></div>
+                    <div><span class="summary-label">Ingredientes únicos</span><span class="summary-value" id="uniqueIngredients">0</span></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon purple"><i class="fas fa-calculator"></i></div>
+                    <div><span class="summary-label">Batch promedio (kg)</span><span class="summary-value" id="avgBatch">0</span></div>
+                </div>
+            </div>
+
+            <!-- Tabla de fórmulas -->
+            <div class="table-card">
+                <div class="card-header">
+                    <h3>Lista de fórmulas</h3>
+                    <span class="badge" id="formulaCount">0</span>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Batch (kg)</th>
+                                <th>Unidades</th>
+                                <th>Contenido Neto</th>
+                                <th>Producto</th>
+                                <th>Ingredientes</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="formulaTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== MODAL: NUEVA / EDITAR FÓRMULA ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nueva fórmula</h3>
+                <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="formulaForm" novalidate autocomplete="off">
+                <input type="hidden" id="editId" value="" />
+
+                <!-- Fila 1: Nombre y Estado -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre de la fórmula *</label>
+                        <input type="text" id="nombre" placeholder="Ej: SUPER INKA MARACUYA" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="estadoFormula">Estado</label>
+                        <select id="estadoFormula">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Fila 2: Batch y Unidades -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tamanoBatch">Tamaño del Batch (kg) *</label>
+                        <input type="number" id="tamanoBatch" step="0.01" min="0.01" value="30" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="unidadesBatch">Unidades por batch</label>
+                        <input type="number" id="unidadesBatch" step="1" min="1" value="1000" />
+                    </div>
+                </div>
+
+                <!-- Fila 3: Contenido Neto y Producto Terminado -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contenidoNeto">Contenido Neto (kg por unidad)</label>
+                        <input type="number" id="contenidoNeto" step="0.001" min="0.001" value="0.008" />
+                    </div>
+                    <div class="form-group">
+                        <label for="productoTerminado">Producto terminado</label>
+                        <select id="productoTerminado">
+                            <option value="">Seleccionar</option>
+                            <!-- Las opciones se llenan desde JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="form-group">
+                    <label for="observaciones">Observaciones</label>
+                    <input type="text" id="observaciones" placeholder="Notas adicionales" />
+                </div>
+
+                <!-- Ingredientes -->
+                <div class="form-group">
+                    <label>Ingredientes (materias primas)</label>
+                    <div class="items-container">
+                        <!-- Plantilla de fila de ingrediente (oculta) -->
+                        <div class="item-row" id="ingredientRowTemplate" style="display:none;">
+                            <select class="ingrediente-mp" style="flex:2;" required></select>
+                            <input type="number" class="ingrediente-porcentaje" placeholder="%" step="0.0001" min="0" value="0" style="flex:1;" required />
+                            <input type="number" class="ingrediente-cantidad" placeholder="Cantidad (kg)" step="0.001" min="0" style="flex:1;" readonly />
+                            <button type="button" class="item-remove"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <!-- Contenedor de filas dinámicas -->
+                        <div id="ingredientsContainer"></div>
+                        <!-- Botón para agregar ingrediente -->
+                        <button type="button" class="btn-add-item" id="addIngredientBtn"><i class="fas fa-plus"></i> Agregar ingrediente</button>
+                    </div>
+                    <!-- Totales -->
+                    <div style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-muted);">
+                        <span>Total porcentaje: <strong id="totalPorcentaje">0.00%</strong></span>
+                        <span style="margin-left:1rem;">Peso calculado total: <strong id="totalPesoCalculado">0.00 kg</strong></span>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="modalCancel">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="modalSubmit">Guardar fórmula</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: DETALLE DE FÓRMULA ===== -->
+    <div class="modal-overlay" id="modalDetalleOverlay">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalDetalleTitle">Detalle de fórmula</h3>
+                <button class="modal-close" id="modalDetalleClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="detalleContent">
+                <!-- Información general de la fórmula -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 2rem; margin-bottom:1rem; padding:0.5rem 1rem; background:var(--bg-main); border-radius:8px;">
+                    <div><strong>Nombre:</strong> <span id="detalleNombre">-</span></div>
+                    <div><strong>Estado:</strong> <span id="detalleEstado">-</span></div>
+                    <div><strong>Batch (kg):</strong> <span id="detalleBatch">-</span></div>
+                    <div><strong>Unidades por batch:</strong> <span id="detalleUnidades">-</span></div>
+                    <div><strong>Contenido Neto (kg):</strong> <span id="detalleContenidoNeto">-</span></div>
+                    <div><strong>Producto terminado:</strong> <span id="detalleProducto">-</span></div>
+                    <div style="grid-column: span 2;"><strong>Observaciones:</strong> <span id="detalleObservaciones">-</span></div>
+                </div>
+                <!-- Tabla de ingredientes -->
+                <div style="margin-bottom:1rem;">
+                    <h4 style="font-weight:600; margin-bottom:0.5rem;">Ingredientes</h4>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Materia Prima</th>
+                                    <th>Porcentaje (%)</th>
+                                    <th>Cantidad en Batch (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detalleIngredientesBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Botones del modal de detalle -->
+            <div class="form-actions" style="margin-top:1rem;">
+                <button type="button" class="btn-primary" id="detalleDescargarBtn"><i class="fas fa-download"></i> Descargar CSV</button>
+                <button type="button" class="btn-cancel" id="modalDetalleCancel">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="theme.js"></script>
+    <script src="api.js"></script>
+    <script src="formulas.js"></script>
+</body>
+</html>

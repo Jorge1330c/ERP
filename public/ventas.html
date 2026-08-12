@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERP Nexus · Ventas</title>
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Librerías para exportar a PDF y CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="ventas.css" />
+    <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fas fa-cube"></i></div>
+            <span class="brand-name">ERP <strong>Nexus</strong></span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                <li class="active"><a href="ventas.html"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
+                <li><a href="clientes.html"><i class="fas fa-users"></i> Clientes</a></li>
+                <li><a href="inventario.html"><i class="fas fa-boxes"></i> Inventario</a></li>
+                <li><a href="formulas.html"><i class="fas fa-flask"></i> Fórmulas</a></li>
+                <li><a href="proveedores.html"><i class="fas fa-truck"></i> Proveedores</a></li>
+                <li><a href="informes.html"><i class="fas fa-file-alt"></i> Informes</a></li>
+                <li><a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="admin.html"><i class="fas fa-user-shield"></i> Administración</a></li>
+                <li class="logout"><a href="login.html" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer"><small>v2.4.1</small></div>
+    </aside>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main class="main-content">
+
+        <!-- ===== HEADER (topbar) ===== -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar..." id="globalSearch" />
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="notif-btn" id="notifBtn"><i class="fas fa-bell"></i><span class="notif-badge">3</span></button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10542/10542459.png" alt="Avatar" />
+                        <span id="userNameDisplay">USUARIO</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="configuracion.html"><i class="fas fa-user"></i> Mi perfil</a>
+                        <a href="configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+                        <a href="#"><i class="fas fa-question-circle"></i> Ayuda</a>
+                        <hr />
+                        <a href="#" id="logoutDropdown"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== PÁGINA DE VENTAS ===== -->
+        <section class="ventas-page">
+
+            <!-- Encabezado común -->
+            <div class="page-header">
+                <h2><i class="fas fa-shopping-cart"></i> Ventas</h2>
+                <div class="header-actions">
+                    <button class="btn-outline" id="exportBtn"><i class="fas fa-file-export"></i> Exportar</button>
+                    <button class="btn-primary" id="openAddModal"><i class="fas fa-plus"></i> Nuevo</button>
+                </div>
+            </div>
+
+            <!-- ===== PESTAÑAS ===== -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="pedidos"><i class="fas fa-box"></i> Pedidos</button>
+                <button class="tab-btn" data-tab="cotizaciones"><i class="fas fa-file-invoice"></i> Cotizaciones</button>
+                <button class="tab-btn" data-tab="comprobantes"><i class="fas fa-receipt"></i> Comprobantes</button>
+            </div>
+
+            <!-- ===== CONTENIDO DE PESTAÑAS ===== -->
+            <div class="tab-content">
+
+                <!-- ===== TAB: PEDIDOS ===== -->
+                <div class="tab-panel active" id="tab-pedidos">
+                    <!-- Tarjetas de resumen -->
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <div class="summary-icon blue"><i class="fas fa-dollar-sign"></i></div>
+                            <div><span class="summary-label">Total ventas</span><span class="summary-value" id="totalVentas">$0</span></div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon green"><i class="fas fa-shopping-bag"></i></div>
+                            <div><span class="summary-label">Pedidos</span><span class="summary-value" id="totalPedidos">0</span></div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon orange"><i class="fas fa-clock"></i></div>
+                            <div><span class="summary-label">Pendientes</span><span class="summary-value" id="pendientes">0</span></div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon purple"><i class="fas fa-check-circle"></i></div>
+                            <div><span class="summary-label">Completados</span><span class="summary-value" id="completados">0</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label>Estado</label>
+                            <select id="statusFilter">
+                                <option value="">Todos</option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="completado">Completado</option>
+                                <option value="cancelado">Cancelado</option>
+                                <option value="enviado">Enviado</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Cliente</label>
+                            <select id="clientFilter"><option value="">Todos</option></select>
+                        </div>
+                        <button class="btn-filter" id="applyFilters"><i class="fas fa-sliders-h"></i> Aplicar</button>
+                        <button class="btn-reset" id="resetFilters"><i class="fas fa-undo"></i></button>
+                    </div>
+
+                    <!-- Tabla de pedidos -->
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h3>Lista de pedidos</h3>
+                            <span class="badge" id="pedidoCount">0</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pedidoTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div> <!-- fin tab-pedidos -->
+
+                <!-- ===== TAB: COTIZACIONES ===== -->
+                <div class="tab-panel" id="tab-cotizaciones">
+                    <!-- Tarjetas de resumen -->
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <div class="summary-icon blue"><i class="fas fa-file-invoice"></i></div>
+                            <div><span class="summary-label">Total cotizaciones</span><span class="summary-value" id="totalCotizaciones">0</span></div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon green"><i class="fas fa-check-circle"></i></div>
+                            <div><span class="summary-label">Aprobadas</span><span class="summary-value" id="cotizacionesAprobadas">0</span></div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon orange"><i class="fas fa-clock"></i></div>
+                            <div><span class="summary-label">Pendientes</span><span class="summary-value" id="cotizacionesPendientes">0</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros para cotizaciones -->
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label>Estado</label>
+                            <select id="cotizacionStatusFilter">
+                                <option value="">Todos</option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="aprobada">Aprobada</option>
+                                <option value="rechazada">Rechazada</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Cliente</label>
+                            <select id="cotizacionClientFilter"><option value="">Todos</option></select>
+                        </div>
+                        <button class="btn-filter" id="applyCotizacionFilters"><i class="fas fa-sliders-h"></i> Aplicar</button>
+                        <button class="btn-reset" id="resetCotizacionFilters"><i class="fas fa-undo"></i></button>
+                    </div>
+
+                    <!-- Tabla de cotizaciones -->
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h3>Lista de cotizaciones</h3>
+                            <span class="badge" id="cotizacionCount">0</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cotizacionTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div> <!-- fin tab-cotizaciones -->
+
+                <!-- ===== TAB: COMPROBANTES ===== -->
+                <div class="tab-panel" id="tab-comprobantes">
+                    <!-- Tarjetas de resumen -->
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <div class="summary-icon blue"><i class="fas fa-receipt"></i></div>
+                            <div><span class="summary-label">Total comprobantes</span><span class="summary-value" id="totalComprobantes">0</span></div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon green"><i class="fas fa-check-circle"></i></div>
+                            <div><span class="summary-label">Emitidos</span><span class="summary-value" id="comprobantesEmitidos">0</span></div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon orange"><i class="fas fa-clock"></i></div>
+                            <div><span class="summary-label">Pendientes</span><span class="summary-value" id="comprobantesPendientes">0</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros para comprobantes -->
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label>Tipo</label>
+                            <select id="comprobanteTipoFilter">
+                                <option value="">Todos</option>
+                                <option value="factura">Factura</option>
+                                <option value="boleta">Boleta</option>
+                                <option value="nota_credito">Nota Crédito</option>
+                                <option value="nota_debito">Nota Débito</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Estado</label>
+                            <select id="comprobanteEstadoFilter">
+                                <option value="">Todos</option>
+                                <option value="emitido">Emitido</option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="anulado">Anulado</option>
+                            </select>
+                        </div>
+                        <button class="btn-filter" id="applyComprobanteFilters"><i class="fas fa-sliders-h"></i> Aplicar</button>
+                        <button class="btn-reset" id="resetComprobanteFilters"><i class="fas fa-undo"></i></button>
+                    </div>
+
+                    <!-- Tabla de comprobantes -->
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h3>Listado de comprobantes electrónicos</h3>
+                            <span class="badge" id="comprobanteCount">0</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Número</th>
+                                        <th>Tipo</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="comprobanteTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div> <!-- fin tab-comprobantes -->
+
+            </div> <!-- fin tab-content -->
+
+        </section>
+
+    </main>
+
+    <!-- ===== MODAL: NUEVO / EDITAR PEDIDO ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nuevo pedido</h3>
+                <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="pedidoForm" autocomplete="off">
+                <input type="hidden" id="editId" value="" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cliente">Cliente *</label>
+                        <select id="cliente" required><option value="">Seleccionar</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha">Fecha *</label>
+                        <input type="date" id="fecha" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Productos</label>
+                    <div class="items-container">
+                        <div class="item-row" id="itemRowTemplate" style="display:none;">
+                            <select class="item-producto" style="flex:2;"><option value="">Seleccionar</option></select>
+                            <input type="number" class="item-cantidad" placeholder="Cantidad" min="1" value="1" style="flex:1;" />
+                            <input type="number" class="item-precio" placeholder="Precio unit." step="0.01" min="0" style="flex:1;" />
+                            <span class="item-subtotal">$0.00</span>
+                            <button type="button" class="item-remove"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div id="itemsContainer"></div>
+                        <button type="button" class="btn-add-item" id="addItemBtn"><i class="fas fa-plus"></i> Agregar producto</button>
+                    </div>
+                </div>
+                <div class="total-row"><strong>Total:</strong> <span id="totalPedidoModal">$0.00</span></div>
+                <div class="form-group">
+                    <label for="estadoPedido">Estado</label>
+                    <select id="estadoPedido">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="completado">Completado</option>
+                        <option value="cancelado">Cancelado</option>
+                        <option value="enviado">Enviado</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="modalCancel">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="modalSubmit">Guardar pedido</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: NUEVO / EDITAR COTIZACIÓN ===== -->
+    <div class="modal-overlay" id="modalCotizacionOverlay">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalCotizacionTitle">Nueva cotización</h3>
+                <button class="modal-close" id="modalCotizacionClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="cotizacionForm" autocomplete="off">
+                <input type="hidden" id="editCotizacionId" value="" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cotCliente">Cliente *</label>
+                        <select id="cotCliente" required><option value="">Seleccionar</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cotFecha">Fecha *</label>
+                        <input type="date" id="cotFecha" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Productos</label>
+                    <div class="items-container">
+                        <div class="item-row" id="cotItemTemplate" style="display:none;">
+                            <select class="cot-producto" style="flex:2;"><option value="">Seleccionar</option></select>
+                            <input type="number" class="cot-cantidad" placeholder="Cantidad" min="1" value="1" style="flex:1;" />
+                            <input type="number" class="cot-precio" placeholder="Precio unit." step="0.01" min="0" style="flex:1;" />
+                            <span class="item-subtotal">$0.00</span>
+                            <button type="button" class="item-remove"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div id="cotItemsContainer"></div>
+                        <button type="button" class="btn-add-item" id="addCotItemBtn"><i class="fas fa-plus"></i> Agregar producto</button>
+                    </div>
+                </div>
+                <div class="total-row"><strong>Total:</strong> <span id="totalCotizacionModal">$0.00</span></div>
+                <div class="form-group">
+                    <label for="cotEstado">Estado</label>
+                    <select id="cotEstado">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="aprobada">Aprobada</option>
+                        <option value="rechazada">Rechazada</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="modalCotizacionCancel">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="modalCotizacionSubmit">Guardar cotización</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: NUEVO / EDITAR COMPROBANTE ===== -->
+    <div class="modal-overlay" id="modalComprobanteOverlay">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalComprobanteTitle">Nuevo comprobante</h3>
+                <button class="modal-close" id="modalComprobanteClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="comprobanteForm" autocomplete="off">
+                <input type="hidden" id="editComprobanteId" value="" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="compTipo">Tipo *</label>
+                        <select id="compTipo" required>
+                            <option value="">Seleccionar</option>
+                            <option value="factura">Factura</option>
+                            <option value="boleta">Boleta</option>
+                            <option value="nota_credito">Nota Crédito</option>
+                            <option value="nota_debito">Nota Débito</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="compNumero">Número *</label>
+                        <input type="text" id="compNumero" placeholder="F001-0001" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="compCliente">Cliente *</label>
+                        <select id="compCliente" required><option value="">Seleccionar</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="compFecha">Fecha *</label>
+                        <input type="date" id="compFecha" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Productos</label>
+                    <div class="items-container">
+                        <div class="item-row" id="compItemTemplate" style="display:none;">
+                            <select class="comp-producto" style="flex:2;"><option value="">Seleccionar</option></select>
+                            <input type="number" class="comp-cantidad" placeholder="Cantidad" min="1" value="1" style="flex:1;" />
+                            <input type="number" class="comp-precio" placeholder="Precio unit." step="0.01" min="0" style="flex:1;" />
+                            <span class="item-subtotal">$0.00</span>
+                            <button type="button" class="item-remove"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div id="compItemsContainer"></div>
+                        <button type="button" class="btn-add-item" id="addCompItemBtn"><i class="fas fa-plus"></i> Agregar producto</button>
+                    </div>
+                </div>
+                <div class="total-row"><strong>Total:</strong> <span id="totalComprobanteModal">$0.00</span></div>
+                <div class="form-group">
+                    <label for="compEstado">Estado</label>
+                    <select id="compEstado">
+                        <option value="emitido">Emitido</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="anulado">Anulado</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="modalComprobanteCancel">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="modalComprobanteSubmit">Guardar comprobante</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: DETALLE (Pedido / Cotización / Comprobante) ===== -->
+    <div class="modal-overlay" id="modalDetalleOverlay">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalDetalleTitle">Detalle</h3>
+                <button class="modal-close" id="modalDetalleClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="detalleContent">
+                <!-- Información general -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 2rem; margin-bottom:1rem; padding:0.5rem 1rem; background:var(--bg-main); border-radius:8px;">
+                    <div><strong>ID:</strong> <span id="detalleId">-</span></div>
+                    <div><strong>Tipo:</strong> <span id="detalleTipo">-</span></div>
+                    <div><strong>Cliente:</strong> <span id="detalleCliente">-</span></div>
+                    <div><strong>Fecha:</strong> <span id="detalleFecha">-</span></div>
+                    <div><strong>Total:</strong> <span id="detalleTotal">-</span></div>
+                    <div><strong>Estado:</strong> <span id="detalleEstado">-</span></div>
+                </div>
+                <!-- Tabla de productos -->
+                <div style="margin-bottom:1rem;">
+                    <h4 style="font-weight:600; margin-bottom:0.5rem;">Productos</h4>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unit.</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detalleItemsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions" style="margin-top:1rem;">
+                <!-- Botón para aprobar cotización (solo si es cotización pendiente) -->
+                <button type="button" class="btn-primary" id="detalleAprobarBtn" style="display:none;"><i class="fas fa-check"></i> Aprobar cotización</button>
+                <button type="button" class="btn-cancel" id="modalDetalleCancel">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="theme.js"></script>
+    <script src="api.js"></script>
+    <script src="ventas.js"></script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERP Nexus · Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Librerías para exportar a PDF y CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="inventario.css" />
+    <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fas fa-cube"></i></div>
+            <span class="brand-name">ERP <strong>Nexus</strong></span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="ventas.html"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
+                <li><a href="clientes.html"><i class="fas fa-users"></i> Clientes</a></li>
+                <li class="active"><a href="inventario.html"><i class="fas fa-boxes"></i> Inventario</a></li>
+                <li><a href="formulas.html"><i class="fas fa-flask"></i> Fórmulas</a></li>
+                <li><a href="proveedores.html"><i class="fas fa-truck"></i> Proveedores</a></li>
+                <li><a href="informes.html"><i class="fas fa-file-alt"></i> Informes</a></li>
+                <li><a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="admin.html"><i class="fas fa-user-shield"></i> Administración</a></li>
+                <li class="logout"><a href="login.html" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer"><small>v2.4.1</small></div>
+    </aside>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main class="main-content">
+
+        <!-- ===== HEADER ===== -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar productos..." id="globalSearch" />
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="notif-btn" id="notifBtn"><i class="fas fa-bell"></i><span class="notif-badge">3</span></button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10542/10542459.png" alt="Avatar" />
+                        <span id="userNameDisplay">USUARIO</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="configuracion.html"><i class="fas fa-user"></i> Mi perfil</a>
+                        <a href="configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+                        <a href="#"><i class="fas fa-question-circle"></i> Ayuda</a>
+                        <hr />
+                        <a href="#" id="logoutDropdown"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== PÁGINA DE INVENTARIO ===== -->
+        <section class="inventory-page">
+
+            <!-- Encabezado -->
+            <div class="page-header">
+                <h2><i class="fas fa-boxes"></i> Reporte de Inventario</h2>
+                <div class="header-actions">
+                    <button class="btn-outline" id="exportBtn"><i class="fas fa-file-export"></i> Exportar</button>
+                    <button class="btn-primary" id="openAddModal"><i class="fas fa-plus"></i> Nuevo producto</button>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>Categoría</label>
+                    <select id="categoryFilter"><option value="">Todas</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>Estado de stock</label>
+                    <select id="stockFilter">
+                        <option value="">Todos</option>
+                        <option value="bajo">Stock bajo</option>
+                        <option value="normal">Normal</option>
+                        <option value="exceso">Exceso</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Estado producto</label>
+                    <select id="estadoFilter">
+                        <option value="">Todos</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Ordenar por</label>
+                    <select id="sortFilter">
+                        <option value="nombre">Nombre</option>
+                        <option value="cantidad">Cantidad</option>
+                        <option value="precio">Precio</option>
+                        <option value="valor">Valor total</option>
+                    </select>
+                </div>
+                <button class="btn-filter" id="applyFilters"><i class="fas fa-sliders-h"></i> Aplicar</button>
+                <button class="btn-reset" id="resetFilters"><i class="fas fa-undo"></i></button>
+            </div>
+
+            <!-- Tarjetas de resumen -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-icon blue"><i class="fas fa-cubes"></i></div>
+                    <div><span class="summary-label">Total productos</span><span class="summary-value" id="totalProducts">0</span></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon green"><i class="fas fa-dollar-sign"></i></div>
+                    <div><span class="summary-label">Valor inventario</span><span class="summary-value" id="totalValue">$0</span></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon orange"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div><span class="summary-label">Productos bajo stock</span><span class="summary-value" id="lowStockCount">0</span></div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon purple"><i class="fas fa-chart-simple"></i></div>
+                    <div><span class="summary-label">Categorías</span><span class="summary-value" id="categoryCount">0</span></div>
+                </div>
+            </div>
+
+            <!-- Selector de métrica para el gráfico -->
+            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+                <label for="chartMetric" style="font-weight:500; font-size:0.9rem;">Mostrar gráfico por:</label>
+                <select id="chartMetric" style="padding:0.3rem 0.8rem; border-radius:8px; border:1px solid var(--border-color);">
+                    <option value="cantidad">Cantidad</option>
+                    <option value="valor">Valor ($)</option>
+                </select>
+            </div>
+
+            <!-- Gráfico por categorías + tabla -->
+            <div class="inventory-grid">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3>Stock por categoría</h3>
+                        <span class="badge" id="chartMetricLabel">Cantidad</span>
+                    </div>
+                    <div class="bar-chart" id="categoryChart"></div>
+                </div>
+
+                <div class="table-card">
+                    <div class="card-header">
+                        <h3>Lista de productos</h3>
+                        <span class="badge" id="productCount">0</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Valor total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagrama de flujo de insumos -->
+            <div class="table-card" style="margin-top:2rem;">
+                <div class="card-header">
+                    <h3><i class="fas fa-route"></i> Flujo de Insumos</h3>
+                    <span class="badge">Materias Primas</span>
+                </div>
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <i class="fas fa-truck" style="color:var(--accent);"></i>
+                        <p><strong>Compras</strong></p>
+                        <small>Ingreso de MP</small>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <i class="fas fa-warehouse" style="color:#38a169;"></i>
+                        <p><strong>Almacén MP</strong></p>
+                        <small>Stock disponible</small>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <i class="fas fa-flask" style="color:#ed8936;"></i>
+                        <p><strong>Producción</strong></p>
+                        <small>Fórmulas</small>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <i class="fas fa-boxes" style="color:#805ad5;"></i>
+                        <p><strong>Producto Terminado</strong></p>
+                        <small>Stock PT</small>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <i class="fas fa-shopping-cart" style="color:#7b9cff;"></i>
+                        <p><strong>Ventas</strong></p>
+                        <small>Pedidos</small>
+                    </div>
+                </div>
+                <p style="text-align:center; color:var(--text-muted); font-size:0.85rem; margin-top:0.5rem;">
+                    <i class="fas fa-info-circle"></i> Las materias primas ingresan por compras, se almacenan, se transforman en producto terminado mediante fórmulas, y finalmente se venden.
+                </p>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- ===== MODAL: NUEVO / EDITAR PRODUCTO (con novalidate) ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nuevo producto</h3>
+                <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="productoForm" novalidate autocomplete="off">
+                <input type="hidden" id="editId" value="" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="codigo">Código</label>
+                        <input type="text" id="codigo" placeholder="Ej: P-001" />
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre *</label>
+                        <input type="text" id="nombre" placeholder="Ej: Polidextrosa" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="categoria">Categoría</label>
+                        <select id="categoria">
+                            <option value="">Seleccionar</option>
+                            <option value="Materia-P">Materia Prima</option>
+                            <option value="Envases">Envases</option>
+                            <option value="Herramientas">Herramientas</option>
+                            <option value="Aditivos">Aditivos</option>
+                            <option value="Saborizantes">Saborizantes</option>
+                            <option value="Producto Terminado">Producto Terminado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cantidad">Cantidad</label>
+                        <input type="number" id="cantidad" step="0.01" min="0" value="0" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="precio">Precio unitario</label>
+                        <input type="number" id="precio" step="0.01" min="0" value="0.00" />
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <select id="estado">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="modalCancel">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="modalSubmit">Guardar producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: TRAZABILIDAD DEL PRODUCTO ===== -->
+    <div class="modal-overlay" id="modalTrazabilidadOverlay">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalTrazabilidadTitle">Trazabilidad del producto</h3>
+                <button class="modal-close" id="modalTrazabilidadClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="trazabilidadContent">
+                <div style="margin-bottom:1rem; padding:0.5rem 1rem; background:var(--bg-main); border-radius:8px;">
+                    <strong id="trazabilidadProductoNombre">Producto</strong>
+                    <span style="color:var(--text-muted); margin-left:1rem;" id="trazabilidadProductoCategoria">Categoría</span>
+                    <span style="color:var(--text-muted); margin-left:1rem;" id="trazabilidadProductoEstado">Estado</span>
+                </div>
+
+                <!-- Pestañas de trazabilidad -->
+                <div class="tabs" style="margin-bottom:1rem;">
+                    <button class="tab-btn active" data-traz-tab="compras"><i class="fas fa-truck"></i> Compras</button>
+                    <button class="tab-btn" data-traz-tab="formulas_mp"><i class="fas fa-flask"></i> Fórmulas (MP)</button>
+                    <button class="tab-btn" data-traz-tab="formulas_pt"><i class="fas fa-cube"></i> Fórmulas (PT)</button>
+                    <button class="tab-btn" data-traz-tab="pedidos"><i class="fas fa-shopping-cart"></i> Pedidos</button>
+                    <button class="tab-btn" data-traz-tab="comprobantes"><i class="fas fa-receipt"></i> Comprobantes</button>
+                </div>
+
+                <div class="tab-content-trazabilidad">
+                    <!-- Compras -->
+                    <div class="tab-panel-traz active" id="traz-compras">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Compra</th>
+                                        <th>Proveedor</th>
+                                        <th>Fecha</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unit.</th>
+                                        <th>Subtotal</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trazComprasBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Fórmulas como MP -->
+                    <div class="tab-panel-traz" id="traz-formulas_mp">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Fórmula</th>
+                                        <th>Nombre</th>
+                                        <th>Estado</th>
+                                        <th>%</th>
+                                        <th>Cantidad Batch</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trazFormulasMPBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Fórmulas como PT -->
+                    <div class="tab-panel-traz" id="traz-formulas_pt">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Fórmula</th>
+                                        <th>Nombre</th>
+                                        <th>Estado</th>
+                                        <th>Batch (kg)</th>
+                                        <th>Unidades</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trazFormulasPTBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Pedidos -->
+                    <div class="tab-panel-traz" id="traz-pedidos">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Pedido</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unit.</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trazPedidosBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Comprobantes -->
+                    <div class="tab-panel-traz" id="traz-comprobantes">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>Tipo</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unit.</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trazComprobantesBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions" style="margin-top:1rem;">
+                <button type="button" class="btn-cancel" id="modalTrazabilidadCancel">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="theme.js"></script>
+    <script src="api.js"></script>
+    <script src="inventario.js"></script>
+</body>
+</html>

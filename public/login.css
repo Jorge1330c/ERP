@@ -1,0 +1,409 @@
+/* ===== RESET Y BASE ===== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background: #f0f4f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+    margin: 0;
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.login-container {
+    display: flex;
+    max-width: 1000px;
+    width: 100%;
+    min-height: 600px;
+    background: #ffffff;
+    border-radius: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+/* ===== PANEL IZQUIERDO - BRANDING ===== */
+.login-brand {
+    flex: 1;
+    background: linear-gradient(145deg, #1a2a3a, #0f1a26);
+    color: #fff;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-brand::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -30%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.brand-content {
+    position: relative;
+    z-index: 1;
+}
+
+.logo-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.logo-icon svg {
+    width: 32px;
+    height: 32px;
+    color: #7b9cff;
+}
+
+.login-brand h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+}
+
+.login-brand h1 span {
+    color: #7b9cff;
+}
+
+.brand-subtitle {
+    font-size: 1rem;
+    opacity: 0.7;
+    margin-bottom: 2rem;
+    font-weight: 400;
+}
+
+.brand-features {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.brand-features span {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ===== PANEL DERECHO - FORMULARIO ===== */
+.login-form {
+    flex: 1;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #ffffff;
+    min-width: 300px;
+}
+
+.form-header {
+    margin-bottom: 2.25rem;
+}
+
+.form-header h2 {
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: #0b1a2a;
+    letter-spacing: -0.02em;
+}
+
+.form-header p {
+    color: #64748b;
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
+}
+
+/* ===== GRUPOS DE CAMPO ===== */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 0.4rem;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    font-size: 1.1rem;
+    line-height: 1;
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 0.85rem 1rem 0.85rem 3rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    background: #f8fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    font-family: inherit;
+}
+
+.input-wrapper input:focus {
+    border-color: #7b9cff;
+    box-shadow: 0 0 0 4px rgba(123, 156, 255, 0.15);
+    background: #ffffff;
+}
+
+.input-wrapper input::placeholder {
+    color: #94a3b8;
+}
+
+/* Botón mostrar/ocultar contraseña */
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    opacity: 0.5;
+    padding: 4px;
+    border-radius: 8px;
+    transition: opacity 0.2s, background 0.2s;
+    line-height: 1;
+}
+
+.toggle-password:hover {
+    opacity: 0.9;
+    background: rgba(0, 0, 0, 0.04);
+}
+
+/* Mensajes de error */
+.error-message {
+    display: block;
+    font-size: 0.8rem;
+    color: #e53e3e;
+    margin-top: 0.3rem;
+    min-height: 1.2rem;
+}
+
+.error-message:empty {
+    display: none;
+}
+
+/* ===== OPCIONES (recordar / olvidé) ===== */
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0.25rem 0 1.75rem 0;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #334155;
+    cursor: pointer;
+}
+
+.remember-me input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #7b9cff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.forgot-link {
+    color: #7b9cff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.forgot-link:hover {
+    color: #5a7fdb;
+    text-decoration: underline;
+}
+
+/* ===== BOTÓN DE INICIO ===== */
+.btn-login {
+    width: 100%;
+    padding: 0.9rem;
+    background: #1a2a3a;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.1s, box-shadow 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.btn-login:hover:not(:disabled) {
+    background: #0f1a26;
+    box-shadow: 0 8px 20px -6px rgba(26, 42, 58, 0.3);
+}
+
+.btn-login:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.btn-login:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-text {
+    transition: opacity 0.2s;
+}
+
+.btn-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2.5px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+.btn-spinner.hidden {
+    display: none;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== PIE DE FORMULARIO ===== */
+.form-footer {
+    text-align: center;
+    margin-top: 1.75rem;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.form-footer a {
+    color: #7b9cff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+.form-version {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 2rem;
+    letter-spacing: 0.3px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        min-height: auto;
+        border-radius: 24px;
+    }
+
+    .login-brand {
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
+
+    .brand-features {
+        justify-content: center;
+    }
+
+    .login-form {
+        padding: 2rem 1.5rem;
+    }
+
+    .form-header h2 {
+        font-size: 1.6rem;
+    }
+
+    .logo-icon {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+
+    .login-brand h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        border-radius: 16px;
+    }
+
+    .login-brand {
+        padding: 1.5rem 1rem;
+    }
+
+    .login-form {
+        padding: 1.5rem 1rem;
+    }
+
+    .input-wrapper input {
+        padding: 0.75rem 1rem 0.75rem 2.8rem;
+        font-size: 0.9rem;
+    }
+}

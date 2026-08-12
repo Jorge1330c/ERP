@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERP Nexus · Informes</title>
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="informes.css" />
+    <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="fas fa-cube"></i>
+            </div>
+            <span class="brand-name">ERP <strong>Nexus</strong></span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="index.html">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="ventas.html">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="clientes.html">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="inventario.html">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="formulas.html">
+                        <i class="fas fa-flask"></i>
+                        <span>Fórmulas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="proveedores.html">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="informes.html">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Informes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="configuracion.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="admin.html">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Administración</span>
+                    </a>
+                </li>
+                <li class="logout">
+                    <a href="login.html" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <small>v2.4.1</small>
+        </div>
+    </aside>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <main class="main-content">
+
+        <!-- ===== HEADER ===== -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar en informes..." id="globalSearch" />
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <button class="notif-btn" id="notifBtn" aria-label="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge">3</span>
+                </button>
+
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <img src="https://cdn-icons-png.flaticon.com/512/10542/10542459.png" alt="Avatar" />
+                        <span id="userNameDisplay">USUARIO</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="configuracion.html"><i class="fas fa-user"></i> Mi perfil</a>
+                        <a href="configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+                        <a href="#"><i class="fas fa-question-circle"></i> Ayuda</a>
+                        <hr />
+                        <a href="#" id="logoutDropdown"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== PÁGINA DE INFORMES ===== -->
+        <section class="informes-page">
+
+            <!-- Encabezado -->
+            <div class="page-header">
+                <h2><i class="fas fa-file-alt"></i> Informes</h2>
+                <div class="header-actions">
+                    <button class="btn-outline" id="downloadBtn"><i class="fas fa-download"></i> Descargar</button>
+                    <button class="btn-primary" id="generateBtn"><i class="fas fa-sync-alt"></i> Generar reporte</button>
+                </div>
+            </div>
+
+            <!-- Tarjetas de resumen -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-icon blue"><i class="fas fa-dollar-sign"></i></div>
+                    <div>
+                        <span class="summary-label">Total Ventas</span>
+                        <span class="summary-value" id="totalVentas">$0</span>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon green"><i class="fas fa-shopping-basket"></i></div>
+                    <div>
+                        <span class="summary-label">Total Compras</span>
+                        <span class="summary-value" id="totalCompras">$0</span>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon orange"><i class="fas fa-percent"></i></div>
+                    <div>
+                        <span class="summary-label">IGV Generado</span>
+                        <span class="summary-value" id="totalIGV">$0</span>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon purple"><i class="fas fa-file-invoice"></i></div>
+                    <div>
+                        <span class="summary-label">Comprobantes</span>
+                        <span class="summary-value" id="totalComprobantes">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros por período -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>Período</label>
+                    <input type="month" id="periodo" value="2025-05" />
+                </div>
+                <div class="filter-group">
+                    <label>Tipo de comprobante</label>
+                    <select id="tipoComprobante">
+                        <option value="">Todos</option>
+                        <option value="Factura">Factura</option>
+                        <option value="Boleta">Boleta</option>
+                        <option value="Nota Crédito">Nota Crédito</option>
+                        <option value="Nota Débito">Nota Débito</option>
+                    </select>
+                </div>
+                <button class="btn-filter" id="applyFilters"><i class="fas fa-sliders-h"></i> Aplicar</button>
+                <button class="btn-reset" id="resetFilters"><i class="fas fa-undo"></i></button>
+            </div>
+
+            <!-- Tabs de informes -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="ventas">
+                    <i class="fas fa-chart-line"></i> Ventas
+                </button>
+                <button class="tab-btn" data-tab="compras">
+                    <i class="fas fa-arrow-down"></i> Compras
+                </button>
+                <button class="tab-btn" data-tab="ple">
+                    <i class="fas fa-book"></i> Libro de Ventas (PLE)
+                </button>
+                <button class="tab-btn" data-tab="retenciones">
+                    <i class="fas fa-hand-holding-usd"></i> Retenciones
+                </button>
+            </div>
+
+            <!-- Contenido de los tabs -->
+            <div class="tab-content">
+
+                <!-- ===== TAB: VENTAS ===== -->
+                <div class="tab-panel active" id="tab-ventas">
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h3>Detalle de Ventas</h3>
+                            <span class="badge" id="ventasCount">0</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Comprobante</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>Subtotal</th>
+                                        <th>IGV</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ventasTableBody">
+                                    <!-- generado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== TAB: COMPRAS ===== -->
+                <div class="tab-panel" id="tab-compras">
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h3>Detalle de Compras</h3>
+                            <span class="badge" id="comprasCount">0</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Comprobante</th>
+                                        <th>Proveedor</th>
+                                        <th>Fecha</th>
+                                        <th>Subtotal</th>
+                                        <th>IGV</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="comprasTableBody">
+                                    <!-- generado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== TAB: LIBRO DE VENTAS (PLE) ===== -->
+                <div class="tab-panel" id="tab-ple">
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h3>Libro de Ventas Electrónico (PLE)</h3>
+                            <span class="badge" id="pleCount">0</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>N° Correlativo</th>
+                                        <th>Tipo</th>
+                                        <th>Serie</th>
+                                        <th>Número</th>
+                                        <th>Fecha Emisión</th>
+                                        <th>Cliente</th>
+                                        <th>RUC</th>
+                                        <th>Total</th>
+                                        <th>IGV</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pleTableBody">
+                                    <!-- generado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== TAB: RETENCIONES ===== -->
+                <div class="tab-panel" id="tab-retenciones">
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h3>Resumen de Retenciones</h3>
+                            <span class="badge" id="retencionesCount">0</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Comprobante</th>
+                                        <th>Proveedor</th>
+                                        <th>Fecha</th>
+                                        <th>Base</th>
+                                        <th>% Retención</th>
+                                        <th>Monto Retenido</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="retencionesTableBody">
+                                    <!-- generado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- fin .tab-content -->
+
+        </section>
+
+    </main>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="theme.js"></script>
+    <script src="api.js"></script>
+    <script src="informes.js"></script>
+</body>
+</html>
